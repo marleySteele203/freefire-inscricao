@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inscrição Copa Free Fire</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Escolha a Modalidade</h2>
+
+    <div class="progress-bar">
+        <div class="progress" style="width: 0%;"></div>
+    </div>
+
+    <button onclick="start('Solo')">Solo</button>
+    <button onclick="start('Duo')">Duo</button>
+    <button onclick="start('Squad')">Squad</button>
+</div>
+
+<script src="script.js"></script>
+<script>
+updateProgress(0);
+
+function start(mode) {
+    saveData('mode', mode);
+    window.location.href = 'etapa2.html';
+}
+</script>
+</body>
+</html>

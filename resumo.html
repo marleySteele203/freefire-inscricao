@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resumo da Inscrição</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Resumo da Inscrição</h2>
+
+    <div class="progress-bar">
+        <div class="progress" style="width: 100%;"></div>
+    </div>
+
+    <pre id="summary" style="white-space: pre-wrap;"></pre>
+
+    <button onclick="sendRegistration()">Enviar Inscrição</button>
+</div>
+
+<script src="script.js"></script>
+<script>
+    // Carregar dados do localStorage
+    const mode = loadData('mode');
+    const players = loadData('players');
+    const squadName = loadData('squadName');
+    const squadTag = loadData('squadTag');
+    const country = loadData('country');
+    const paymentMessage = loadData('paymentMessage');
+
+    // Montar resumo
+    let summaryText = `Modalidade: ${mode}\n`;
+    players.forEach((p,i) => { summaryText += `Jogador ${i+1}: ${p}\n`; });
+    summaryText += `Nome Squad: ${squadName}\nTag: ${squadTag}\n`;
+    summaryText += `País: ${country}\nMensagem de Confirmação: ${paymentMessage}`;
+
+    // Mostrar resumo na tela
+    document.getElementById('summary').textContent = summaryText;
+
+    // Função para enviar para Discord
+    function sendToDiscord(summary){
+        const webhookUrl = "https://discord.com/api/webhooks/1419024179809751161/-6fpwnlG5GfYmVikmqmZT5f18nb8-9I4nSdeTjWrhxL8XVoLnfQsU7Bb1B4yiaLCjEnx";
+        fetch(webhookUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ content: summary })
+        })
+        .then(res => {
+            if(res.ok) alert("Inscrição enviada para Discord!");
+            else alert("Erro ao enviar para Discord.");
+        })
+        .catch(err => alert("Erro: " + err));
+    }
+
+    // Função de envio geral
+    function sendRegistration(){
+        // Envia para email
+        const subject = encodeURIComponent("Inscrição Copa Free Fire");
+        const body = encodeURIComponent(summaryText);
+        window.location.href = `mailto:malazicronel@gmail.com?subject=${subject}&body=${body}`;
+
+        // Envia para Discord
+        sendToDiscord(summaryText);
+
+        // Limpa os dados
+        clearData();
+    }
+</script>
+</body>
+</html>

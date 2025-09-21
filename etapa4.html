@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Etapa 2 - Squad</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Informações da Squad</h2>
+
+    <div class="progress-bar">
+        <div class="progress" style="width: 25%;"></div>
+    </div>
+
+    <input type="text" id="squadName" placeholder="Nome da Squad" required>
+    <input type="text" id="squadTag" placeholder="Tag da Squad (obrigatório)" required>
+
+    <button onclick="nextStep()">Continuar</button>
+    <button onclick="history.back()">Voltar</button>
+</div>
+
+<script src="script.js"></script>
+<script>
+function nextStep() {
+    const squadName = document.getElementById('squadName').value.trim();
+    const squadTag = document.getElementById('squadTag').value.trim();
+
+    if(!squadName || !squadTag) { alert('Preencha todos os campos'); return; }
+
+    saveData('squadName', squadName);
+    saveData('squadTag', squadTag);
+    window.location.href = 'etapa3.html'; // vai para Nomes dos jogadores
+}
+</script>
+</body>
+</html>

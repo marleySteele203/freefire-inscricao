@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: #fff;
+    overflow-x: hidden;
+}
+
+.container {
+    background: rgba(0,0,0,0.75);
+    padding: 30px;
+    border-radius: 15px;
+    width: 400px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.5);
+    position: relative;
+    animation: fadeSlide 0.8s ease-out;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+input, select, button {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+input, select {
+    background: #fff;
+    color: #000;
+}
+
+input:focus, select:focus {
+    box-shadow: 0 0 10px #ff9800;
+}
+
+button {
+    background: #ff9800;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+button:hover {
+    background: #e68900;
+    transform: scale(1.05);
+}
+
+.note {
+    font-size: 14px;
+    color: #ffd700;
+    margin-bottom: 10px;
+}
+
+.progress-bar {
+    width: 100%;
+    background: rgba(255,255,255,0.2);
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.progress {
+    height: 10px;
+    background: #ff9800;
+    width: 0%;
+    border-radius: 8px;
+    transition: width 0.5s ease;
+}
+
+#previewImg {
+    margin-top: 10px;
+    max-width: 100%;
+    border-radius: 8px;
+}
+
+@keyframes fadeSlide {
+    0% {opacity: 0; transform: translateY(20px);}
+    100% {opacity: 1; transform: translateY(0);}
+}
