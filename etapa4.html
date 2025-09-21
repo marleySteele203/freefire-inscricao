@@ -3,36 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Etapa 2 - Squad</title>
+<title>Etapa 4 - Confirmação</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="container">
-    <h2>Informações da Squad</h2>
-
+    <h2>Informações Finais</h2>
     <div class="progress-bar">
-        <div class="progress" style="width: 25%;"></div>
+        <div class="progress" style="width: 75%;"></div>
     </div>
 
-    <input type="text" id="squadName" placeholder="Nome da Squad" required>
-    <input type="text" id="squadTag" placeholder="Tag da Squad (obrigatório)" required>
+    <input type="text" id="country" placeholder="País">
+    <input type="text" id="paymentMessage" placeholder="Mensagem de Confirmação">
 
-    <button onclick="nextStep()">Continuar</button>
+    <button id="nextBtn">Continuar</button>
     <button onclick="history.back()">Voltar</button>
 </div>
 
 <script src="script.js"></script>
 <script>
-function nextStep() {
-    const squadName = document.getElementById('squadName').value.trim();
-    const squadTag = document.getElementById('squadTag').value.trim();
+updateProgress(75);
 
-    if(!squadName || !squadTag) { alert('Preencha todos os campos'); return; }
+document.getElementById('nextBtn').addEventListener('click', ()=>{
+    const country = document.getElementById('country').value.trim();
+    const paymentMessage = document.getElementById('paymentMessage').value.trim();
 
-    saveData('squadName', squadName);
-    saveData('squadTag', squadTag);
-    window.location.href = 'etapa3.html'; // vai para Nomes dos jogadores
-}
+    saveData('country', country);
+    saveData('paymentMessage', paymentMessage);
+
+    window.location.href = 'resumo.html';
+});
 </script>
 </body>
 </html>

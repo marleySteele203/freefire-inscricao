@@ -13,21 +13,11 @@
         <div class="progress" style="width: 25%;"></div>
     </div>
     <input type="text" id="squadName" placeholder="Nome da Squad" required>
-    <input type="text" id="squadTag" placeholder="Tag da Squad (obrigatório)" required>
-    <button onclick="nextStep()">Continuar</button>
+    <input type="text" id="squadTag" placeholder="Tag da Squad" required>
+    <button onclick="goToNextStep(['squadName','squadTag'], 'etapa3.html', 0)">Continuar</button>
+    <button onclick="history.back()">Voltar</button>
 </div>
-
 <script src="script.js"></script>
-<script>
-function nextStep(){
-    const squadName = document.getElementById('squadName').value.trim();
-    const squadTag = document.getElementById('squadTag').value.trim();
-    if(!squadName || !squadTag){ alert('Preencha todos os campos'); return; }
-
-    saveData('squadName', squadName);
-    saveData('squadTag', squadTag);
-    window.location.href = 'etapa3.html';
-}
-</script>
+<script>updateProgress(25);</script>
 </body>
 </html>

@@ -13,34 +13,30 @@
         <div class="progress" style="width: 50%;"></div>
     </div>
     <div id="playerFields"></div>
-    <div class="note">* Pelo menos 3 jogadores devem ter tag no nick</div>
-    <button onclick="nextStep()">Continuar</button>
-    <button onclick="window.history.back()">Voltar</button>
+    <div class="note">* Pelo menos 3 jogadores devem ter a tag da squad</div>
+    <button id="nextBtn">Continuar</button>
+    <button onclick="history.back()">Voltar</button>
 </div>
 
 <script src="script.js"></script>
 <script>
+updateProgress(50);
+
 const mode = loadData('mode');
 const playerDiv = document.getElementById('playerFields');
-let totalPlayers = mode === 'Solo' ? 3 : mode === 'Duo' ? 4 : 6;
+const totalPlayers = mode === 'Solo' ? 3 : mode === 'Duo' ? 4 : 6;
 
+// Cria inputs dinamicamente
 for(let i=1; i<=totalPlayers; i++){
     playerDiv.innerHTML += `<input type="text" id="nick${i}" placeholder="Nick Jogador ${i}" required>`;
 }
 
-function nextStep(){
-    let players = [];
-    let tagCount = 0;
-    for(let i=1;i<=totalPlayers;i++){
-        const nick = document.getElementById('nick'+i).value.trim();
-        if(nick === ''){ alert('Preencha todos os campos'); return; }
-        if(nick.includes(loadData('squadTag'))) tagCount++;
-        players.push(nick);
-    }
-    if(tagCount < 3){ alert('Pelo menos 3 jogadores devem ter a tag da squad'); return; }
-    saveData('players', players);
-    window.location.href = 'etapa4.html';
-}
+// Botão continuar
+document.getElementById('nextBtn').addEventListener('click', ()=>{
+    const ids = [];
+    for(let i=1;i<=totalPlayers;i++) ids.push('nick'+i);
+    goToNextStep(ids, 'etapa4.html', 3);
+});
 </script>
 </body>
 </html>
