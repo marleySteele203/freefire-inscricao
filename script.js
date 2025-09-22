@@ -19,104 +19,219 @@ function clearData(){
 // ==========================
 function updateProgress(percent){
     const progressBar = document.querySelector('.progress');
-    if(progressBar) progressBar.style.width = percent + '%';
+    if(progressBar){
+        progressBar.style.transition = 'width 0.5s ease-in-out';
+        setTimeout(() => {
+            progressBar.style.width = percent + '%';
+            progressBar.textContent = percent + '% completo';
+        }, 50);
+    }
 }
 
 // ==========================
-// Pré-visualizar imagem (não usada atualmente)
+// Validação de campos e salvamento
 // ==========================
-function previewImage(inputId, imgId){
-    const input = document.getElementById(inputId);
-    const img = document.getElementById(imgId);
-    if(input.files && input.files[0]){
-        const reader = new FileReader();
-        reader.onload = e => {
-            img.src = e.target.result;
-            img.style.display = 'block';
-        };
-        reader.readAsDataURL(input.files[0]);
+function validateAndSaveStep(step){
+    if(step === 'step3'){ // Nome e Tag da Squad
+        const squadName = document.getElementById('squadName').value.trim();
+        const squadTag = document.getElementById('squadTag').value.trim();
+        if(!squadName || !squadTag){
+            showError('Preencha todos os campos da Squad.');
+            return false;
+        }
+        saveData('squadName', squadName);
+        saveData('squadTag', squadTag);
+        return true;
     }
+    if(step === 'step4'){ // Nicknames
+        const container = document.getElementById('nicknameInputs');
+        const inputs = container.querySelectorAll('input');
+        const nicknames = [];
+        inputs.forEach(input => {
+            if(input.value.trim()) nicknames.push(input.value.trim());
+        });
+        if(nicknames.length === 0){
+            showError('Insira pelo menos um nickname.');
+            return false;
+        }
+        saveData('nicknames', nicknames);
+        return true;
+    }
+    if(step === 'step5'){ // País e confirmação
+        const country = document.getElementById('countrySelect').value;
+        const confirmationMsg = document.getElementById('confirmationMsg').value.trim();
+        if(!country){
+            showError('Selecione o país antes de continuar.');
+            return false;
+        }
+        saveData('country', country);
+        saveData('confirmationMsg', confirmationMsg);
+        return true;
+    }
+    return true;
+}
+
+// ==========================
+// Mostrar mensagem de erro inline
+// ==========================
+function showError(msg){
+    let errorBox = document.getElementById('errorMsg');
+    if(!errorBox){
+        errorBox = document.createElement('span');
+        errorBox.id = 'errorMsg';
+        errorBox.style.color = 'red';
+        errorBox.style.display = 'block';
+        errorBox.style.marginTop = '5px';
+        document.querySelector('.container').appendChild(errorBox);
+    }
+    errorBox.textContent = msg;
+}
+
+// ==========================
+// Dropdown customizado de países
+// ==========================
+const countrySelect = document.getElementById('countrySelect');
+if(countrySelect){
+    const selected = countrySelect.querySelector('.selected');
+    const options = countrySelect.querySelector('.options');
+
+    selected.addEventListener('click', () => {
+        countrySelect.classList.toggle('active');
+    });
+
+    options.querySelectorAll('div').forEach(option => {
+        option.addEventListener('click', () => {
+            selected.textContent = option.textContent;
+            saveData('country', option.dataset.value);
+            countrySelect.classList.remove('active');
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        if(!countrySelect.contains(e.target)){
+            countrySelect.classList.remove('active');
+        }
+    });
 }
 
 // ==========================
 // Enviar resumo para Discord
 // ==========================
-function sendToDiscord(summaryText){
+function sendToDiscord(messageText){
+    const mode = loadData('mode');
+    const squadName = loadData('squadName') || '';
+    const squadTag = loadData('squadTag') || '';
+    const nicknames = loadData('nicknames') || [];
+    const country = loadData('country') || '';
+    const confirmationMsg = loadData('confirmationMsg') || '';
+
+    let summaryText = `
+📌 Nova Inscrição Copa Free Fire
+Modalidade: ${mode}
+Nome da Squad: ${squadName}
+Tag da Squad: ${squadTag}
+Nicknames: ${nicknames.join(', ')}
+País: ${country}`;
+
+    if(confirmationMsg) summaryText += `\nMensagem: ${confirmationMsg}`;
+    if(messageText) summaryText += `\nObservação: ${messageText}`;
+
     const webhookUrl = "https://discord.com/api/webhooks/1419024179809751161/-6fpwnlG5GfYmVikmqmZT5f18nb8-9I4nSdeTjWrhxL8XVoLnfQsU7Bb1B4yiaLCjEnx";
     fetch(webhookUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: summaryText })
-    }).then(res => {
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({content: summaryText})
+    })
+    .then(res => {
         if(res.ok) alert("Inscrição enviada para Discord!");
         else alert("Erro ao enviar para Discord.");
-    }).catch(err => alert("Erro: " + err));
+    })
+    .catch(err => alert("Erro: " + err));
 }
 
 // ==========================
-// Montar resumo para envio
+// Função para abrir placar
 // ==========================
-function buildSummary(){
+function viewPlacard(){
+    window.location.href = 'placar.html';
+}
+
+// ==========================
+// Função para preencher placar
+// ==========================
+function loadPlacard() {
     const mode = loadData('mode');
-    const players = loadData('players');
-    const squadName = loadData('squadName');
-    const squadTag = loadData('squadTag');
-    const country = loadData('country');
-    const paymentMessage = loadData('paymentMessage');
+    const squadName = loadData('squadName') || '';
+    const squadTag = loadData('squadTag') || '';
+    const nicknames = loadData('nicknames') || [];
 
-    let summaryText = `Modalidade: ${mode}\n`;
-    if(players) players.forEach((p,i) => { summaryText += `Jogador ${i+1}: ${p}\n`; });
-    summaryText += `Nome Squad: ${squadName}\nTag: ${squadTag}\n`;
-    summaryText += `País: ${country || 'Não informado'}\nMensagem de Confirmação: ${paymentMessage || 'Não informado'}`;
+    let totalSlots = 0;
+    if(mode === 'Solo') totalSlots = 48;
+    else if(mode === 'Duo') totalSlots = 24;
+    else if(mode === 'Squad') totalSlots = 12;
 
-    return summaryText;
-}
+    const tbody = document.querySelector('#scoreTable tbody');
+    if(!tbody) return;
+    tbody.innerHTML = '';
 
-// ==========================
-// Função final de envio
-// ==========================
-function sendRegistration(){
-    const summaryText = buildSummary();
+    for(let i = 0; i < totalSlots; i++){
+        let lineName = '-';
+        let lineNick = '-';
+        let lineTag = '-';
 
-    // Envia para e-mail
-    const subject = encodeURIComponent("Inscrição Copa Free Fire");
-    const body = encodeURIComponent(summaryText);
-    window.location.href = `mailto:malazicronel@gmail.com?subject=${subject}&body=${body}`;
+        if(mode === 'Solo'){
+            if(nicknames[i]){
+                lineName = nicknames[i];
+            }
+        } else {
+            if(i < nicknames.length){
+                lineName = squadName;
+                lineNick = nicknames[i];
+                lineTag = squadTag;
+            }
+        }
 
-    // Envia para Discord
-    sendToDiscord(summaryText);
-
-    clearData(); // limpa os dados
-}
-
-// ==========================
-// Funções de navegação e validação
-// ==========================
-function start(mode){
-    saveData('mode', mode);
-    window.location.href = 'etapa2.html';
-}
-
-function goToNextStep(idInputs, nextPage, minTagCount = 3){
-    const values = [];
-    let tagCount = 0;
-    const squadTag = loadData('squadTag');
-
-    for(const id of idInputs){
-        const val = document.getElementById(id).value.trim();
-        if(!val){ alert('Preencha todos os campos'); return; }
-        if(squadTag && val.includes(squadTag)) tagCount++;
-        values.push(val);
+        tbody.innerHTML += `
+            <tr>
+                <td>${i + 1}</td>
+                <td>${lineName}</td>
+                <td>${lineNick}</td>
+                <td>${lineTag}</td>
+            </tr>
+        `;
     }
-
-    if(minTagCount && tagCount < minTagCount){
-        alert(`Pelo menos ${minTagCount} jogadores devem ter a tag da squad`);
-        return;
-    }
-
-    // Salvar dados
-    if(nextPage === 'etapa3.html') saveData('squadName', values[0]) || saveData('squadTag', values[1]);
-    else if(nextPage === 'etapa4.html') saveData('players', values);
-
-    window.location.href = nextPage;
 }
+
+// ==========================
+// Adicionar inscrição no array de linhas
+// ==========================
+function addLine(){
+    const mode = loadData('mode');
+    const squadName = loadData('squadName') || '';
+    const squadTag = loadData('squadTag') || '';
+    const nicknames = loadData('nicknames') || [];
+
+    let lines = loadData('lines') || [];
+    const lineObj = {
+        mode: mode,
+        squadName: squadName,
+        squadTag: squadTag,
+        nicknames: nicknames
+    };
+    lines.push(lineObj);
+    saveData('lines', lines);
+}
+
+// ==========================
+// Funções auxiliares para avançar etapas
+// ==========================
+function nextStep(step, nextPage){
+    if(validateAndSaveStep(step)){
+        window.location.href = nextPage;
+    }
+}
+
+// ==========================
+// Exemplo de uso nos botões HTML
+// <button onclick="nextStep('step3','etapa4.html')">Continuar</button>
+// ==========================

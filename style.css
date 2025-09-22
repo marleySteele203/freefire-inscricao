@@ -71,14 +71,22 @@ button:hover {
     background: rgba(255,255,255,0.2);
     border-radius: 8px;
     margin-bottom: 20px;
+    overflow: hidden;
+    position: relative;
 }
 
-.progress {
-    height: 10px;
-    background: #ff9800;
+.progress-bar .progress {
+    height: 25px;
     width: 0%;
+    background: #ff9800;
     border-radius: 8px;
-    transition: width 0.5s ease;
+    transition: width 0.5s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #fff;
+    font-size: 0.8em;
 }
 
 #previewImg {
@@ -90,4 +98,90 @@ button:hover {
 @keyframes fadeSlide {
     0% {opacity: 0; transform: translateY(20px);}
     100% {opacity: 1; transform: translateY(0);}
+}
+
+/* ===== Dropdown Customizado ===== */
+.custom-select {
+    position: relative;
+    user-select: none;
+    margin-bottom: 16px;
+}
+
+.custom-select .selected {
+    background: #fff;
+    color: #000;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.custom-select .options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    color: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: all 0.4s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    z-index: 10;
+}
+
+.custom-select .options div {
+    padding: 12px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.custom-select .options div:hover {
+    background: #ff9800;
+    color: #fff;
+}
+
+.custom-select.active .options {
+    max-height: 500px;
+    opacity: 1;
+    animation: slideFade 0.4s ease forwards;
+}
+
+@keyframes slideFade {
+    0% {opacity: 0; transform: translateY(-10px);}
+    100% {opacity: 1; transform: translateY(0);}
+}
+
+/* ===== RESPONSIVO PARA MOBILE ===== */
+@media (max-width: 480px) {
+    .container {
+        width: 90%;
+        padding: 20px;
+    }
+
+    h2 {
+        font-size: 1.2em;
+    }
+
+    input, select, button {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .progress-bar .progress {
+        height: 20px;
+        font-size: 0.7em;
+    }
+
+    .note {
+        font-size: 12px;
+    }
+
+    .custom-select .selected,
+    .custom-select .options div {
+        font-size: 14px;
+        padding: 10px;
+    }
 }
