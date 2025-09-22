@@ -5,26 +5,135 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Resumo da Inscrição</title>
 <link rel="stylesheet" href="style.css">
+<style>
+.container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    text-align: center;
+    border: 2px solid #ff4d4d;
+    border-radius: 10px;
+    background-color: #1f1c2c;
+    color: #fff;
+}
+
+.container h2 {
+    margin-bottom: 20px;
+}
+
+.container button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    background-color: #ff4d4d;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: 0.3s;
+}
+
+.container button:hover {
+    background-color: #ff1a1a;
+    transform: scale(1.05);
+}
+
+.progress-bar {
+    width: 100%;
+    background-color: #444;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 20px;
+    margin-bottom: 20px;
+}
+
+.progress-bar .progress {
+    height: 100%;
+    width: 100%;
+    background-color: #ff4d4d;
+    transition: width 0.5s ease-in-out;
+}
+
+#summary {
+    text-align: left;
+    margin-top: 20px;
+}
+</style>
 </head>
 <body>
+
 <div class="container">
     <h2>Resumo da Inscrição</h2>
+
     <div class="progress-bar">
-        <div class="progress" style="width: 100%;"></div>
+        <div class="progress"></div>
     </div>
-    <pre id="summary" class="summary"></pre>
-    <button id="sendBtn">Enviar Inscrição</button>
+
+    <div id="summary"></div>
+
+    <button id="finishBtn">Finalizar</button>
 </div>
 
 <script src="script.js"></script>
 <script>
 updateProgress(100);
 
-// Mostra resumo
-document.getElementById('summary').textContent = buildSummary();
+function displaySummary() {
+    const summaryDiv = document.getElementById('summary');
 
-// Botão enviar
-document.getElementById('sendBtn').addEventListener('click', sendRegistration);
+    const mode = loadData('mode');
+    const squadName = loadData('squadName');
+    const squadTag = loadData('squadTag');
+    const nicknames = loadData('nicknames') || [];
+    const country = loadData('country');
+    const message = loadData('confirmationMsg') || '';
+
+    summaryDiv.innerHTML = `
+        <p><strong>Modalidade:</strong> ${mode}</p>
+        <p><strong>Nome da Squad:</strong> ${squadName}</p>
+        <p><strong>Tag da Squad:</strong> ${squadTag}</p>
+        <p><strong>Nicknames:</strong> ${nicknames.join(', ')}</p>
+        <p><strong>País:</strong> ${country}</p>
+        <p><strong>Mensagem:</strong> ${message}</p>
+    `;
+}
+
+// Mostra resumo ao carregar
+displaySummary();
+
+const webhookUrl = "https://discord.com/api/webhooks/1419024179809751161/-6fpwnlG5GfYmVikmqmZT5f18nb8-9I4nSdeTjWrhxL8XVoLnfQsU7Bb1B4yiaLCjEnx";
+
+document.getElementById('finishBtn').addEventListener('click', () => {
+    const mode = loadData('mode');
+    const squadName = loadData('squadName');
+    const squadTag = loadData('squadTag');
+    const nicknames = loadData('nicknames') || [];
+    const country = loadData('country');
+    const message = loadData('confirmationMsg') || '';
+
+    let summaryText = `📌 **Inscrição Free Fire Concluída**\n`;
+    summaryText += `Modalidade: ${mode}\n`;
+    summaryText += `Squad: ${squadName} [${squadTag}]\n`;
+    summaryText += `Nicknames: ${nicknames.join(', ')}\n`;
+    summaryText += `País: ${country}\n`;
+    if(message) summaryText += `Mensagem: ${message}`;
+
+    fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: summaryText })
+    })
+    .then(res => {
+        if(res.ok){
+            alert("Inscrição enviada com sucesso!");
+            clearData();
+            window.location.href = 'index.html';
+        } else {
+            alert("Erro ao enviar inscrição para Discord.");
+        }
+    })
+    .catch(err => alert("Erro: " + err));
+});
 </script>
 </body>
 </html>

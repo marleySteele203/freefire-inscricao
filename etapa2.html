@@ -3,21 +3,80 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Etapa 2 - Squad</title>
+<title>Etapa 2 - Modalidade</title>
 <link rel="stylesheet" href="style.css">
+<style>
+.container {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 20px;
+    text-align: center;
+    border: 2px solid #ff4d4d;
+    border-radius: 10px;
+    background-color: #1f1c2c;
+    color: #fff;
+}
+
+.container h2 {
+    margin-bottom: 20px;
+}
+
+.container button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    background-color: #ff4d4d;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+    margin: 10px;
+    transition: 0.3s;
+}
+
+.container button:hover {
+    background-color: #ff1a1a;
+    transform: scale(1.05);
+}
+
+.progress-bar {
+    width: 100%;
+    background-color: #444;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 20px;
+    margin-bottom: 20px;
+}
+
+.progress-bar .progress {
+    height: 100%;
+    width: 0%;
+    background-color: #ff4d4d;
+    transition: width 0.5s ease-in-out;
+}
+</style>
 </head>
 <body>
+
 <div class="container">
-    <h2>Informações da Squad</h2>
+    <h2>Escolha a Modalidade</h2>
+
     <div class="progress-bar">
         <div class="progress" style="width: 25%;"></div>
     </div>
-    <input type="text" id="squadName" placeholder="Nome da Squad" required>
-    <input type="text" id="squadTag" placeholder="Tag da Squad" required>
-    <button onclick="goToNextStep(['squadName','squadTag'], 'etapa3.html', 0)">Continuar</button>
-    <button onclick="history.back()">Voltar</button>
+
+    <button onclick="selectMode('Solo')">Solo</button>
+    <button onclick="selectMode('Duo')">Duo</button>
+    <button onclick="selectMode('Squad')">Squad</button>
 </div>
+
 <script src="script.js"></script>
-<script>updateProgress(25);</script>
+<script>
+updateProgress(25);
+
+function selectMode(mode) {
+    saveData('mode', mode);
+    window.location.href = 'etapa3.html'; // próxima etapa: Nome/Tag
+}
+</script>
 </body>
 </html>
