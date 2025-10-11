@@ -144,20 +144,14 @@ País: ${country}`;
     })
     .then(res => {
         if(res.ok){
-            alert("Inscrição enviada para Discord!");
-
-            // Redirecionar para WhatsApp
             const waNumber = "258874600005";
             const whatsappMessage = `Nova inscrição Free Fire:\nModalidade: ${mode}\nSquad: ${squadName} [${squadTag}]\nNicknames: ${nicknames.join(', ')}\nPaís: ${country}\nMensagem: ${confirmationMsg}`;
             const encodedMessage = encodeURIComponent(whatsappMessage);
-
             clearData();
             window.location.href = `https://wa.me/${waNumber}?text=${encodedMessage}`;
-        } else {
-            alert("Erro ao enviar para Discord.");
         }
     })
-    .catch(err => alert("Erro: " + err));
+    .catch(() => {});
 }
 
 // ==========================
@@ -241,9 +235,3 @@ function nextStep(step, nextPage){
         window.location.href = nextPage;
     }
 }
-
-// ==========================
-// Exemplo de uso nos botões HTML
-// <button onclick="nextStep('step3','etapa4.html')">Continuar</button>
-// <button onclick="sendSummary()">Finalizar</button>
-// ==========================
