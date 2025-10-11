@@ -115,9 +115,9 @@ if(countrySelect){
 }
 
 // ==========================
-// Enviar resumo para Discord
+// Enviar resumo para Discord e WhatsApp
 // ==========================
-function sendToDiscord(messageText){
+function sendSummary(){
     const mode = loadData('mode');
     const squadName = loadData('squadName') || '';
     const squadTag = loadData('squadTag') || '';
@@ -132,19 +132,30 @@ Nome da Squad: ${squadName}
 Tag da Squad: ${squadTag}
 Nicknames: ${nicknames.join(', ')}
 País: ${country}`;
-
     if(confirmationMsg) summaryText += `\nMensagem: ${confirmationMsg}`;
-    if(messageText) summaryText += `\nObservação: ${messageText}`;
 
     const webhookUrl = "https://discord.com/api/webhooks/1419024179809751161/-6fpwnlG5GfYmVikmqmZT5f18nb8-9I4nSdeTjWrhxL8XVoLnfQsU7Bb1B4yiaLCjEnx";
+    
+    // Envio para Discord
     fetch(webhookUrl, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({content: summaryText})
     })
     .then(res => {
-        if(res.ok) alert("Inscrição enviada para Discord!");
-        else alert("Erro ao enviar para Discord.");
+        if(res.ok){
+            alert("Inscrição enviada para Discord!");
+
+            // Redirecionar para WhatsApp
+            const waNumber = "258874600005";
+            const whatsappMessage = `Nova inscrição Free Fire:\nModalidade: ${mode}\nSquad: ${squadName} [${squadTag}]\nNicknames: ${nicknames.join(', ')}\nPaís: ${country}\nMensagem: ${confirmationMsg}`;
+            const encodedMessage = encodeURIComponent(whatsappMessage);
+
+            clearData();
+            window.location.href = `https://wa.me/${waNumber}?text=${encodedMessage}`;
+        } else {
+            alert("Erro ao enviar para Discord.");
+        }
     })
     .catch(err => alert("Erro: " + err));
 }
@@ -234,4 +245,5 @@ function nextStep(step, nextPage){
 // ==========================
 // Exemplo de uso nos botões HTML
 // <button onclick="nextStep('step3','etapa4.html')">Continuar</button>
+// <button onclick="sendSummary()">Finalizar</button>
 // ==========================
