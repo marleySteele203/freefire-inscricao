@@ -116,22 +116,8 @@ document.getElementById('confirmBtn').addEventListener('click', () => {
     saveData('country', country);
     saveData('confirmationMsg', message);
 
-    // Pega os dados salvos nas etapas anteriores (ou define "Não informado")
-    const playerName = localStorage.getItem('playerName') || "Não informado";
-    const playerID = localStorage.getItem('playerID') || "Não informado";
-    const playerTeam = localStorage.getItem('playerTeam') || "Não informado";
-
-    // Monta a mensagem automática
-    let whatsappMessage = `Nova inscrição Free Fire:\nNome: ${playerName}\nID: ${playerID}\nTime: ${playerTeam}\nPaís: ${country}\nConfirmação: ${message}`;
-
-    // Codifica para URL
-    const encodedMessage = encodeURIComponent(whatsappMessage);
-
-    // Número do criador (sem +)
-    const waNumber = "258874600005";
-
-    // Redireciona para WhatsApp com a mensagem pronta
-    window.location.href = `https://wa.me/${waNumber}?text=${encodedMessage}`;
+    // vai direto pro resumo
+    window.location.href = 'resumo.html';
 });
 </script>
 </body>

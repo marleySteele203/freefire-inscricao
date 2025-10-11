@@ -66,19 +66,6 @@ function validateAndSaveStep(step){
         }
         saveData('country', country);
         saveData('confirmationMsg', confirmationMsg);
-
-        // ==========================
-        // REDIRECIONAMENTO PARA WHATSAPP
-        // ==========================
-        const playerName = loadData('playerName') || "Não informado";
-        const playerID = loadData('playerID') || "Não informado";
-        const playerTeam = loadData('playerTeam') || "Não informado";
-
-        let whatsappMessage = `Nova inscrição Free Fire:\nNome: ${playerName}\nID: ${playerID}\nTime: ${playerTeam}\nPaís: ${country}\nConfirmação: ${confirmationMsg}`;
-        const encodedMessage = encodeURIComponent(whatsappMessage);
-        const waNumber = "258874600005"; // número do criador
-        window.location.href = `https://wa.me/${waNumber}?text=${encodedMessage}`;
-
         return true;
     }
     return true;
@@ -108,25 +95,23 @@ if(countrySelect){
     const selected = countrySelect.querySelector('.selected');
     const options = countrySelect.querySelector('.options');
 
-    if(selected && options){
-        selected.addEventListener('click', () => {
-            countrySelect.classList.toggle('active');
-        });
+    selected.addEventListener('click', () => {
+        countrySelect.classList.toggle('active');
+    });
 
-        options.querySelectorAll('div').forEach(option => {
-            option.addEventListener('click', () => {
-                selected.textContent = option.textContent;
-                saveData('country', option.dataset.value);
-                countrySelect.classList.remove('active');
-            });
+    options.querySelectorAll('div').forEach(option => {
+        option.addEventListener('click', () => {
+            selected.textContent = option.textContent;
+            saveData('country', option.dataset.value);
+            countrySelect.classList.remove('active');
         });
+    });
 
-        document.addEventListener('click', (e) => {
-            if(!countrySelect.contains(e.target)){
-                countrySelect.classList.remove('active');
-            }
-        });
-    }
+    document.addEventListener('click', (e) => {
+        if(!countrySelect.contains(e.target)){
+            countrySelect.classList.remove('active');
+        }
+    });
 }
 
 // ==========================
