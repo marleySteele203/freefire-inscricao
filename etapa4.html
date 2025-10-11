@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Etapa 4 - Nicknames</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    text-align: center;
+    border: 2px solid #ff4d4d;
+    border-radius: 10px;
+    background-color: #1f1c2c;
+    color: #fff;
+}
+
+.container h2 {
+    margin-bottom: 20px;
+}
+
+.container input {
+    display: block;
+    width: 80%;
+    margin: 10px auto;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    font-size: 1em;
+}
+
+.container button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    background-color: #ff4d4d;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: 0.3s;
+}
+
+.container button:hover {
+    background-color: #ff1a1a;
+    transform: scale(1.05);
+}
+
+.progress-bar {
+    width: 100%;
+    background-color: #444;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 20px;
+    margin-bottom: 20px;
+}
+
+.progress-bar .progress {
+    height: 100%;
+    width: 75%;
+    background-color: #ff4d4d;
+    transition: width 0.5s ease-in-out;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Nicknames dos Jogadores</h2>
+
+    <div class="progress-bar">
+        <div class="progress">75%</div>
+    </div>
+
+    <div id="nicknameInputs"></div>
+
+    <button onclick="nextStep()">Continuar</button>
+    <button onclick="history.back()">Voltar</button>
+</div>
+
+<script src="script.js"></script>
+<script>
+updateProgress(75);
+
+const mode = loadData('mode'); // 'Solo', 'Duo', 'Squad'
+const container = document.getElementById('nicknameInputs');
+
+if(mode === 'Solo') {
+    // Solo: apenas 1 nickname
+    const nick1 = document.createElement('input');
+    nick1.type = "text";
+    nick1.id = "nickname1";
+    nick1.placeholder = "Nickname 1";
+    container.appendChild(nick1);
+
+} else if(mode === 'Duo') {
+    // Duo: 2 nicknames + 1 reserva
+    for(let i=1; i<=2; i++){
+        const input = document.createElement('input');
+        input.type = "text";
+        input.id = `nickname${i}`;
+        input.placeholder = `Nickname ${i}`;
+        container.appendChild(input);
+    }
+    const reserva = document.createElement('input');
+    reserva.type = "text";
+    reserva.id = "nickname3";
+    reserva.placeholder = "Reserva 1";
+    container.appendChild(reserva);
+
+} else if(mode === 'Squad') {
+    // Squad: 4 nicknames + 2 reservas
+    for(let i=1; i<=4; i++){
+        const input = document.createElement('input');
+        input.type = "text";
+        input.id = `nickname${i}`;
+        input.placeholder = `Nickname ${i}`;
+        container.appendChild(input);
+    }
+    for(let r=1; r<=2; r++){
+        const reserva = document.createElement('input');
+        reserva.type = "text";
+        reserva.id = `reserva${r}`;
+        reserva.placeholder = `Reserva ${r}`;
+        container.appendChild(reserva);
+    }
+}
+
+function nextStep() {
+    const nicknames = [];
+    const totalInputs = container.querySelectorAll('input');
+
+    totalInputs.forEach(input => {
+        const value = input.value.trim();
+        if(value) nicknames.push(value);
+    });
+
+    if(nicknames.length === 0){
+        alert("Insira pelo menos um nickname.");
+        return;
+    }
+
+    saveData('nicknames', nicknames);
+    window.location.href = 'etapa5.html';
+}
+</script>
+</body>
+</html>

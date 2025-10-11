@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Etapa 3 - Nome e Tag</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    text-align: center;
+    border: 2px solid #ff4d4d;
+    border-radius: 10px;
+    background-color: #1f1c2c;
+    color: #fff;
+}
+
+.container input {
+    display: block;
+    width: 80%;
+    margin: 10px auto;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    font-size: 1em;
+}
+
+.container button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    background-color: #ff4d4d;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: 0.3s;
+}
+
+.container button:hover {
+    background-color: #ff1a1a;
+    transform: scale(1.05);
+}
+
+.progress-bar {
+    width: 100%;
+    background-color: #444;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 20px;
+    margin-bottom: 20px;
+}
+
+.progress-bar .progress {
+    height: 100%;
+    width: 50%;
+    background-color: #ff4d4d;
+    transition: width 0.5s ease-in-out;
+}
+
+.back-btn {
+    background-color: #666;
+    margin-top: 10px;
+}
+
+.back-btn:hover {
+    background-color: #333;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Nome e Tag da Squad</h2>
+
+    <div class="progress-bar">
+        <div class="progress"></div>
+    </div>
+
+    <input type="text" id="squadName" placeholder="Nome da Squad" required>
+    <input type="text" id="squadTag" placeholder="Tag da Squad (obrigatório)" required>
+
+    <button onclick="nextStep()">Continuar</button>
+    <button class="back-btn" onclick="goBack()">Voltar</button>
+</div>
+
+<script src="script.js"></script>
+<script>
+updateProgress(50);
+
+function nextStep() {
+    const squadName = document.getElementById('squadName').value.trim();
+    const squadTag = document.getElementById('squadTag').value.trim();
+
+    if (!squadName || !squadTag) {
+        alert('Preencha todos os campos');
+        return;
+    }
+
+    saveData('squadName', squadName);
+    saveData('squadTag', squadTag);
+    window.location.href = 'etapa4.html';
+}
+
+function goBack() {
+    window.location.href = 'etapa2.html';
+}
+</script>
+</body>
+</html>
