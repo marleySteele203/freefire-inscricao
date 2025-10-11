@@ -115,7 +115,7 @@ document.getElementById('finishBtn').addEventListener('click', () => {
     const country = loadData('country');
     const message = loadData('confirmationMsg') || '';
 
-    // Mensagem resumida
+    // Mensagem resumida para Discord
     let summaryText = `📌 **Inscrição Free Fire Concluída**\n`;
     summaryText += `Modalidade: ${mode}\n`;
     summaryText += `Squad: ${squadName} [${squadTag}]\n`;
@@ -132,10 +132,12 @@ document.getElementById('finishBtn').addEventListener('click', () => {
     .then(res => {
         if(res.ok){
             // Redireciona para WhatsApp com mensagem pronta
-            let whatsappMessage = `Nova inscrição Free Fire:\nModalidade: ${mode}\nSquad: ${squadName} [${squadTag}]\nNicknames: ${nicknames.join(', ')}\nPaís: ${country}\nMensagem: ${message}`;
+            let whatsappMessage = `Nova inscrição Free Fire:\nModalidade: ${mode}\nSquad: ${squadName} [${squadTag}]\nNicknames: ${nicknames.join(', ')}\nPaís: ${country}\n${message ? 'Mensagem: ' + message : ''}`;
             const encodedMessage = encodeURIComponent(whatsappMessage);
-            clearData();
-            window.location.href = `https://wa.me/${waNumber}?text=${encodedMessage}`;
+            clearData(); // limpa localStorage
+            window.open(`https://wa.me/${waNumber}?text=${encodedMessage}`, '_blank'); // abre WhatsApp
+            alert("Inscrição enviada com sucesso!");
+            window.location.href = 'index.html';
         } else {
             alert("Erro ao enviar inscrição para Discord.");
         }
