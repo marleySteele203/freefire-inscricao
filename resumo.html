@@ -16,7 +16,9 @@
     background-color: #1f1c2c;
     color: #fff;
 }
-.container h2 { margin-bottom: 20px; }
+.container h2 {
+    margin-bottom: 20px;
+}
 .container button {
     padding: 10px 20px;
     font-size: 1.2em;
@@ -46,7 +48,10 @@
     background-color: #ff4d4d;
     transition: width 0.5s ease-in-out;
 }
-#summary { text-align: left; margin-top: 20px; }
+#summary {
+    text-align: left;
+    margin-top: 20px;
+}
 </style>
 </head>
 <body>
@@ -62,9 +67,9 @@
 
 <script src="script.js"></script>
 <script>
-window.addEventListener('DOMContentLoaded', () => {
-    updateProgress(100);
+updateProgress(100);
 
+function displaySummary() {
     const summaryDiv = document.getElementById('summary');
     const mode = loadData('mode');
     const squadName = loadData('squadName');
@@ -81,31 +86,38 @@ window.addEventListener('DOMContentLoaded', () => {
         <p><strong>País:</strong> ${country}</p>
         <p><strong>Mensagem:</strong> ${message}</p>
     `;
+}
 
-    const webhookUrl = "https://discord.com/api/webhooks/1419024179809751161/-6fpwnlG5GfYmVikmqmZT5f18nb8-9I4nSdeTjWrhxL8XVoLnfQsU7Bb1B4yiaLCjEnx";
+// Mostra resumo ao carregar
+displaySummary();
+
+document.getElementById('finishBtn').addEventListener('click', () => {
+    const mode = loadData('mode');
+    const squadName = loadData('squadName');
+    const squadTag = loadData('squadTag');
+    const nicknames = loadData('nicknames') || [];
+    const country = loadData('country');
+    const message = loadData('confirmationMsg') || '';
+
     const waNumber = "258874600005";
+    const whatsappMessage = `Nova inscrição Free Fire:\nModalidade: ${mode}\nSquad: ${squadName} [${squadTag}]\nNicknames: ${nicknames.join(', ')}\nPaís: ${country}\n${message ? 'Mensagem: ' + message : ''}`;
+    const encodedMessage = encodeURIComponent(whatsappMessage);
 
-    document.getElementById('finishBtn').addEventListener('click', () => {
-        let summaryText = `📌 Nova Inscrição Free Fire\nModalidade: ${mode}\nSquad: ${squadName} [${squadTag}]\nNicknames: ${nicknames.join(', ')}\nPaís: ${country}\n${message ? 'Mensagem: ' + message : ''}`;
+    // Abre WhatsApp **primeiro**
+    window.location.href = `https://wa.me/${waNumber}?text=${encodedMessage}`;
 
-        fetch(webhookUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ content: summaryText })
-        })
-        .then(res => {
-            if(res.ok){
-                const whatsappMessage = `Nova inscrição Free Fire:\nModalidade: ${mode}\nSquad: ${squadName} [${squadTag}]\nNicknames: ${nicknames.join(', ')}\nPaís: ${country}\n${message ? 'Mensagem: ' + message : ''}`;
-                const encodedMessage = encodeURIComponent(whatsappMessage);
-                clearData();
-                // Abre WhatsApp em nova aba
-                window.open(`https://wa.me/${waNumber}?text=${encodedMessage}`, '_blank');
-            } else {
-                console.error("Erro ao enviar para Discord");
-            }
-        })
-        .catch(err => console.error("Erro:", err));
+    // Envia para Discord em segundo plano
+    const webhookUrl = "https://discord.com/api/webhooks/1419024179809751161/-6fpwnlG5GfYmVikmqmZT5f18nb8-9I4nSdeTjWrhxL8XVoLnfQsU7Bb1B4yiaLCjEnx";
+    let summaryText = `📌 **Inscrição Free Fire Concluída**\nModalidade: ${mode}\nSquad: ${squadName} [${squadTag}]\nNicknames: ${nicknames.join(', ')}\nPaís: ${country}\n${message ? 'Mensagem: ' + message : ''}`;
+
+    fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: summaryText })
     });
+
+    // Limpa o storage
+    clearData();
 });
 </script>
 </body>

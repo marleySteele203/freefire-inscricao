@@ -32,7 +32,7 @@ function updateProgress(percent){
 // Validação de campos e salvamento
 // ==========================
 function validateAndSaveStep(step){
-    if(step === 'step3'){ // Nome e Tag da Squad
+    if(step === 'step3'){ 
         const squadName = document.getElementById('squadName').value.trim();
         const squadTag = document.getElementById('squadTag').value.trim();
         if(!squadName || !squadTag){
@@ -43,7 +43,7 @@ function validateAndSaveStep(step){
         saveData('squadTag', squadTag);
         return true;
     }
-    if(step === 'step4'){ // Nicknames
+    if(step === 'step4'){ 
         const container = document.getElementById('nicknameInputs');
         const inputs = container.querySelectorAll('input');
         const nicknames = [];
@@ -57,7 +57,7 @@ function validateAndSaveStep(step){
         saveData('nicknames', nicknames);
         return true;
     }
-    if(step === 'step5'){ // País e confirmação
+    if(step === 'step5'){ 
         const country = document.getElementById('countrySelect').value;
         const confirmationMsg = document.getElementById('confirmationMsg').value.trim();
         if(!country){
@@ -136,7 +136,6 @@ País: ${country}`;
 
     const webhookUrl = "https://discord.com/api/webhooks/1419024179809751161/-6fpwnlG5GfYmVikmqmZT5f18nb8-9I4nSdeTjWrhxL8XVoLnfQsU7Bb1B4yiaLCjEnx";
     
-    // Envio para Discord
     fetch(webhookUrl, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
